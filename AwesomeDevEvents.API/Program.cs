@@ -1,4 +1,9 @@
+using AwesomeDevEvents.API.Persitence;
+
 var builder = WebApplication.CreateBuilder(args);
+
+//adicionando BdFake/ simulando um bd em memória
+builder.Services.AddSingleton<DevEventsDbContext>();
 
 // Add services to the container.
 
