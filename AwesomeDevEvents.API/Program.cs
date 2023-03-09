@@ -1,9 +1,16 @@
-using AwesomeDevEvents.API.Persitence;
+using AwesomeDevEvents.API.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//adicionando BdFake/ simulando um bd em memória
-builder.Services.AddSingleton<DevEventsDbContext>();
+//cria a conection string
+var cnn = builder.Configuration.GetConnectionString("DevEventsCS");
+
+////adicionando Bd Fake/ simulando um bd em memória
+//builder.Services.AddDbContext<DevEventsDbContext>(o => o.UseInMemoryDatabase("DevEventsDb"));
+
+//inclui conexão com banco sql
+builder.Services.AddDbContext<DevEventsDbContext>(db => db.UseSqlServer(cnn));
 
 // Add services to the container.
 
