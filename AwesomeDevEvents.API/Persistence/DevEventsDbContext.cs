@@ -4,16 +4,33 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace AwesomeDevEvents.API.Persistence
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class DevEventsDbContext : DbContext
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="options"></param>
         public DevEventsDbContext(DbContextOptions<DevEventsDbContext> options) : base(options)
         {
 
 
         }
+        /// <summary>
+        /// 
+        /// </summary>
         public DbSet<DevEvent> DevEvents { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
         public DbSet<DevEventSpeaker> DevEventSpeakers { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="modelBuilder"></param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DevEvent>(e =>
