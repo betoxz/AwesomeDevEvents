@@ -1,12 +1,31 @@
 using AwesomeDevEvents.API.Persistence;
-using Microsoft.AspNetCore.Components.Web;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Serilog;
+using Serilog.Sinks.MSSqlServer;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+builder.Logging.ClearProviders();
+
 //cria a conection string
 var cnn = builder.Configuration.GetConnectionString("DevEventsCS");
+
+// Use Serilog
+builder.Host.UseSerilog((hostContext, services, configuration) =>
+{
+    configuration
+        .Enrich.FromLogContext()
+        .WriteTo.MSSqlServer(cnn, sinkOptions: new MSSqlServerSinkOptions
+        {
+            AutoCreateSqlTable = true,
+            TableName = "LogApiDevEvents"
+        })
+        .WriteTo.Console(Serilog.Events.LogEventLevel.Debug);
+});
+
+
 
 ////adicionando Bd Fake/ simulando um bd em memória
 //builder.Services.AddDbContext<DevEventsDbContext>(o => o.UseInMemoryDatabase("DevEventsDb"));
@@ -15,7 +34,6 @@ var cnn = builder.Configuration.GetConnectionString("DevEventsCS");
 builder.Services.AddDbContext<DevEventsDbContext>(db => db.UseSqlServer(cnn));
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -32,7 +50,7 @@ builder.Services.AddSwaggerGen(sw =>
             Email = "betoxz@gmail.com", //pode usar por exemplo o email do grupo da equipe desenvolvedora,
             Name = "Carlos Martins",
             Url = new Uri("http://enderecodosite.com.br")
-        }       
+        }
     });
 
     //caminho do arquivo de documentação

@@ -1,6 +1,5 @@
 ﻿using AwesomeDevEvents.API.Entities;
 using AwesomeDevEvents.API.Persistence;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,13 +13,15 @@ namespace AwesomeDevEvents.API.Controllers
     public class DevEventsController : ControllerBase
     {
         private readonly DevEventsDbContext _context;
+        private readonly ILogger<DevEventsController> _logger;
         /// <summary>
         /// Construtor
         /// </summary>
         /// <param name="context"></param>
-        public DevEventsController(DevEventsDbContext context)
+        public DevEventsController(ILogger<DevEventsController> logger, DevEventsDbContext context)
         {
             this._context = context;
+            this._logger = logger;
         }
 
         /// <summary>
@@ -31,7 +32,9 @@ namespace AwesomeDevEvents.API.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult GetAll()
-        {
+        {            
+            _logger.LogInformation($"{nameof(GetAll)} na chamada!!");
+
             var devEvents = _context.DevEvents.Where(x => !x.IsDeleted).ToList();
 
             return Ok(devEvents);
